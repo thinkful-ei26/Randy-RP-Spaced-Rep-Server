@@ -169,71 +169,71 @@ router.get('/getUser/:id', (req,res, next)=>{
 //AUTH get all blocks with the uerRef of an authorized User
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
-router.get('/blocks/',jwtAuth,(req,res) => {
+// router.get('/blocks/',jwtAuth,(req,res) => {
  
-  console.log('looking for this user id: ',req.user.id);
+//   console.log('looking for this user id: ',req.user.id);
 
-  //let testId = "5c3655bdead1409174e85298";
+//   //let testId = "5c3655bdead1409174e85298";
 
-  Block.find({userRef: req.user.id})
-    .then((data)=>{return res.json(data);});
+//   Block.find({userRef: req.user.id})
+//     .then((data)=>{return res.json(data);});
 
-});
+// });
 
-//AUTH post blocks
-//Post--Create a block
-router.post('/blocks/post',jwtAuth,(req,res,next)=>{
+// //AUTH post blocks
+// //Post--Create a block
+// router.post('/blocks/post',jwtAuth,(req,res,next)=>{
 
-  console.log('body>> ',req.body);
+//   console.log('body>> ',req.body);
 
   
-  const startDateInput = req.body.startDate;
-  const endDateInput = req.body.endDate;
-  const userRefInput = req.body.userRef;
+//   const startDateInput = req.body.startDate;
+//   const endDateInput = req.body.endDate;
+//   const userRefInput = req.body.userRef;
 
-  const newBlock = {
+//   const newBlock = {
 
-    userRef: userRefInput,
-    startDate: startDateInput,
-    endDate: endDateInput
+//     userRef: userRefInput,
+//     startDate: startDateInput,
+//     endDate: endDateInput
 
 
-  };
+//   };
 
-  Block.create(newBlock)
-    .then((data)=>{
+//   Block.create(newBlock)
+//     .then((data)=>{
 
-      res.json(data);
+//       res.json(data);
  
-    });
+//     });
 
-});
+// });
 
-//PUT--edit by ID by its ID and user ID
-router.put('/blocks/put/:id',jwtAuth,(req,res,next)=>{
+// //PUT--edit by ID by its ID and user ID
+// router.put('/blocks/put/:id',jwtAuth,(req,res,next)=>{
 
-  const blockId = req.params.id;
-  //const userRef = req.body.userRef;
+//   const blockId = req.params.id;
+//   //const userRef = req.body.userRef;
 
-  const updateStartDate = req.body.startDate;
-  const updateEndDate = req.body.endDate;
+//   const updateStartDate = req.body.startDate;
+//   const updateEndDate = req.body.endDate;
 
-  const blockUpdate = {
+//   const blockUpdate = {
  
-    startDate: updateStartDate,
-    endDate: updateEndDate
+//     startDate: updateStartDate,
+//     endDate: updateEndDate
 
-  };
+//   };
 
-  Block.findOneAndUpdate({_id: blockId}, blockUpdate, {new: true})
-    .then((data)=>{
+//   Block.findOneAndUpdate({_id: blockId}, blockUpdate, {new: true})
+//     .then((data)=>{
 
-      res.json(data);
+//       res.json(data);
 
-    });
+//     });
  
 
-}); 
+// }); 
 
 
 //DELETE

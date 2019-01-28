@@ -1,20 +1,29 @@
 'use strict';
 
+const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, require: true},
+mongoose.Promise = global.Promise;
+
+const UserSchema = mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
   firstName: {type: String, default: ''},
   lastName: {type: String, default: ''}
-  // userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
 // Add `createdAt` and `updatedAt` fields
-userSchema.set('timestamps', true);
+UserSchema.set('timestamps', true);
 
 // Transform output during `res.json(data)`, `console.log(data)` etc.
-userSchema.set('toJSON', {
+UserSchema.set('toJSON', {
   virtuals: true,
   transform: (doc, result) => {
     delete result._id;
@@ -22,4 +31,23 @@ userSchema.set('toJSON', {
   }
 });
 
-module.exports = mongoose.model('User', userSchema);
+UserSchema.methods.serialize = function() {
+  return {
+    username: this.username || '',
+    firstName: this.firstName || '',
+    lastName: this.lastName || '',
+    id: this._id
+  };
+};
+
+UserSchema.methods.validatePassword = function(password) {
+  return bcrypt.compare(password, this.password);
+};
+
+UserSchema.statics.hashPassword = function(password) {
+  return bcrypt.hash(password, 10);
+};
+
+const User = mongoose.model('User', UserSchema);
+
+module.exports = {User};

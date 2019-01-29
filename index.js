@@ -16,6 +16,7 @@ const app = express();
 
 //new
 const { router: usersRouter } = require('./users');
+const { router: wordsRouter } = require('./words');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 
 mongoose.Promise = global.Promise;
@@ -39,6 +40,7 @@ passport.use(jwtStrategy);
 
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
+app.use('/api/words/', wordsRouter);
 
 //new -- below
 const jwtAuth = passport.authenticate('jwt', { session: false });

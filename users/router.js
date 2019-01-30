@@ -94,7 +94,7 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
 
-  let {username, password, firstName = '', lastName = ''} = req.body;
+  let {username, password, firstName = '', lastName = '', questions} = req.body;
   // Username and password come in pre-trimmed, otherwise we throw an error
   // before this
   firstName = firstName.trim();
@@ -120,7 +120,8 @@ router.post('/', jsonParser, (req, res) => {
         username,
         password: hash,
         firstName,
-        lastName
+        lastName,
+        questions  
       });
     })
     .then(user => {
@@ -150,8 +151,39 @@ router.get('/', (req, res) => {
 });
 
 
+
+
+
+//endpoint for user words
+// //PUT--edit by ID
+router.put('/put/:id',(req,res,next) =>{
+
+  const findById = req.params.id;
+  const newName = req.body.name;
+
+  //Switch Algo stuff goes here
+
+
+
+
+  console.log('change this name >>> ',findById,' to this name >>> ',newName);
+
+  User.findOneAndUpdate({_id: findById}, {name: newName}, {new: true})
+    .then(data =>{
+
+      return res.json(data);
+
+    });
+
+
+
+});
+
+
+
+
 //GET user by ID
-router.get('/getUser/:id', (req,res, next)=>{
+router.get('/getNextWord/:id', (req,res, next)=>{
 
   console.log('finding by this id>>> ',req.params.id);
   
@@ -161,8 +193,44 @@ router.get('/getUser/:id', (req,res, next)=>{
       return res.json(data);
  
     });
- 
+
 }); 
+
+router.get('/next/:id', (req, res, next)=>{
+
+  // console.log('finding by this id>>> ',req.params.id);
+
+//geGet word by index
+  //
+  User.findById(req.params.id)
+    .then((data)=>{
+      let headIndex = data.head;
+      let currentNode = data.questions[headIndex];
+      let nextNode = data.questions[headIndex].next;
+      return (data, res.json(data.questions[headIndex]), headIndex, currentNode, nextNode);
+    })
+    .then(
+      User.findOneAndUpdate({_id: findById}, {name: newName})
+        .then(data =>{
+          return res.json(data);
+        })
+    );
+
+}); 
+
+router.put('/next/:id',(req,res,next) =>{
+
+  const findById = req.params.id;
+
+  User.findOneAndUpdate({_id: findById}, {name: newName})
+    .then(data =>{
+      return res.json(data);
+
+    });
+
+
+
+});
 
  
 

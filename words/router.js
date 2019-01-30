@@ -109,7 +109,7 @@ router.get('/', (req, res) => {
     .then(words => res.json(words.map(word => word.serialize())))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
-
+ 
 
 //GET user by ID
 router.get('/getWord/:id', (req,res, next)=>{

@@ -48,8 +48,9 @@ UserSchema.methods.serialize = function() {
     lastName: this.lastName || '',
     questions: this.questions,
     head: this.head,
-    id: this._id
+    _id: this._id
   };
+
 };
 
 UserSchema.methods.validatePassword = function(password) {

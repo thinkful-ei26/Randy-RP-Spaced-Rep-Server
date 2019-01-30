@@ -28,7 +28,7 @@ wordSchema.methods.serialize = function() {
   return {
     word: this.word || '',
     answer: this.answer || '',
-    id: this._id
+    _id: this._id
   };
 };
 

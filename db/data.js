@@ -3,75 +3,52 @@
 const words = [
   {
     word: 'Si',
-    meaning: 'Yes',
-    correctCount: 0,
-    totalCount: 0
+    answer: 'Yes'
   },
   {
     word: 'No',
-    meaning: 'No',
-    correctCount: 0,
-    totalCount: 0
+    answer: 'No'
   },
   {
     word: 'You',
-    meaning: 'Tu',
-    correctCount: 0,
-    totalCount: 0
+    answer: 'Tu'
+    
   },
   {
     word: 'Lo',
-    meaning: 'I',
-    correctCount: 0,
-    totalCount: 0
+    answer: 'I'
   },
   {
     word: 'Per favore',
-    meaning: 'Please',
-    correctCount: 0,
-    totalCount: 0
+    answer: 'Please'
   },
   {
     word: 'Grazie',
-    meaning: 'Thank you',
-    correctCount: 0,
-    totalCount: 0
+    answer: 'Thank you'
   },
   {
     word: 'Ciao',
-    meaning: 'Hello',
-    correctCount: 0,
-    totalCount: 0
+    answer: 'Hello'
   },
   {
     word: 'Addio',
-    meaning: 'Farewell',
-    correctCount: 0,
-    totalCount: 0
+    answer: 'Farewell'
   },
   {
     word: 'Primo',
-    meaning: 'First',
-    correctCount: 0,
-    totalCount: 0
+    answer: 'First'
   },
   {
     word: 'Secondo',
-    meaning: 'Second',
-    correctCount: 0,
-    totalCount: 0
+    answer: 'Second'
   },
   {
     word: 'Otto',
-    meaning: 'Eight',
-    correctCount: 0,
-    totalCount: 0
+    answer: 'Eight'
   },
   {
     word: 'Due',
-    meaning: 'Two',
-    correctCount: 0,
-    totalCount: 0
+    answer: 'Two'
   }
 ];
 

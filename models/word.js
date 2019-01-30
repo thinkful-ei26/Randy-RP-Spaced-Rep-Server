@@ -9,12 +9,10 @@ const wordSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  meaning: {
+  answer: {
     type: String,
     required: true
-  },
-  correctCount: { type: Number, default: 0 },
-  totalCount: { type: Number, default: 0 }
+  }
 });
 
 // Transform output during `res.json(data)`, `console.log(data)` etc.
@@ -29,9 +27,7 @@ wordSchema.set('toJSON', {
 wordSchema.methods.serialize = function() {
   return {
     word: this.word || '',
-    meaning: this.meaning || '',
-    correctCount: this.correctCount || 0,
-    totalCount: this.totalCount || 0,
+    answer: this.answer || '',
     id: this._id
   };
 };

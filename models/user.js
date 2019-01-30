@@ -16,7 +16,17 @@ const UserSchema = mongoose.Schema({
     required: true
   },
   firstName: {type: String, default: ''},
-  lastName: {type: String, default: ''}
+  lastName: {type: String, default: ''},
+  questions: [
+    {
+      _id: mongoose.Schema.Types.ObjectId,
+      word: String,
+      answer: String,
+      memoryStrength: {type: Number, default: 1},
+      next: Number
+    }
+  ],
+  head: {type: Number, default: 0}
 });
 
 // Add `createdAt` and `updatedAt` fields
@@ -36,6 +46,8 @@ UserSchema.methods.serialize = function() {
     username: this.username || '',
     firstName: this.firstName || '',
     lastName: this.lastName || '',
+    questions: this.questions,
+    head: this.head,
     id: this._id
   };
 };

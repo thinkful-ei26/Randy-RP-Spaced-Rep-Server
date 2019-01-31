@@ -223,14 +223,18 @@ router.get('/next/:id', (req, res, next)=>{
 
  
 //PUT BY USER ID THE NEW ORDER OF QUESTIONS BASED ON RESULT
-router.put('/next/:id/:testResults/:userInfo',(req,res,next) =>{
- 
+router.put('/next/:id/:testResults',(req,res,next) =>{
+  
+  console.log('>>> ',req.body.username);
+   
+
   const testResults = req.params.testResults;
   const findById = req.params.id;
-  const userData = 
-
-
-  console.log('testResults ',testResults);
+  const userData = req.body;
+  
+  console.log('backend userData ',userData); 
+  //console.log('backend userData firstName ',userData.firstName);
+  console.log('backend testResults ',testResults);
 
   //TRUE
   if(testResults){
@@ -251,11 +255,11 @@ router.put('/next/:id/:testResults/:userInfo',(req,res,next) =>{
   //create new questions object with changes
 
   //Update Head and questions array
-  User.findOneAndUpdate({_id: findById}, {questions})
-    .then(data =>{
-      return res.json(data);
+  // User.findOneAndUpdate({_id: findById}, {questions})
+  //   .then(data =>{
+  //     return res.json(data);
 
-    });
+  //   });
 
 
 

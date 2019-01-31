@@ -14,6 +14,13 @@ const { dbConnect } = require('./db-mongoose');
 
 const app = express();
 
+
+app.use(
+  cors({
+    origin: CLIENT_ORIGIN
+  })
+);
+
 //new
 const { router: usersRouter } = require('./users');
 const { router: wordsRouter } = require('./words');
@@ -29,11 +36,6 @@ app.use(
   })
 );
 
-app.use(
-  cors({
-    origin: CLIENT_ORIGIN
-  })
-);
 
 passport.use(localStrategy);
 passport.use(jwtStrategy);

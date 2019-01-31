@@ -223,10 +223,12 @@ router.get('/next/:id', (req, res, next)=>{
 
  
 //PUT BY USER ID THE NEW ORDER OF QUESTIONS BASED ON RESULT
-router.put('/next/:id/:testResults',(req,res,next) =>{
+router.put('/next/:id/:testResults/:userInfo',(req,res,next) =>{
  
   const testResults = req.params.testResults;
   const findById = req.params.id;
+  const userData = 
+
 
   console.log('testResults ',testResults);
 

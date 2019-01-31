@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 'use strict';
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -196,6 +197,8 @@ router.get('/getNextWord/:id', (req,res, next)=>{
 
 }); 
 
+
+//GET THE CURRENT WORD from current user head
 router.get('/next/:id', (req, res, next)=>{
 
   // console.log('finding by this id>>> ',req.params.id);
@@ -205,24 +208,48 @@ router.get('/next/:id', (req, res, next)=>{
   User.findById(req.params.id)
     .then((data)=>{
       let headIndex = data.head;
-      let currentNode = data.questions[headIndex];
-      let nextNode = data.questions[headIndex].next;
-      return (data, res.json(data.questions[headIndex]), headIndex, currentNode, nextNode);
-    })
-    .then(
-      User.findOneAndUpdate({_id: findById}, {name: newName})
-        .then(data =>{
-          return res.json(data);
-        })
-    );
+      // let currentNode = data.questions[headIndex];
+      // let nextNode = data.questions[headIndex].next;
+      return (res.json(data.questions[headIndex]));
+    });
+  // .then(
+  //   User.findOneAndUpdate({_id: findById}, {name: newName})
+  //     .then(data =>{
+  //       return res.json(data);
+  //     })
+  // );
 
 }); 
 
-router.put('/next/:id',(req,res,next) =>{
-
+ 
+//PUT BY USER ID THE NEW ORDER OF QUESTIONS BASED ON RESULT
+router.put('/next/:id/:testResults',(req,res,next) =>{
+ 
+  const testResults = req.params.testResults;
   const findById = req.params.id;
 
-  User.findOneAndUpdate({_id: findById}, {name: newName})
+  console.log('testResults ',testResults);
+
+  //TRUE
+  if(testResults){
+
+    //set M to larger for the current word
+
+  }
+  /*FALSE*/ else { 
+
+    //set M to less for the current word
+
+  }
+
+  //set new Head based on M?
+
+  //do swap of nodes? 
+
+  //create new questions object with changes
+
+  //Update Head and questions array
+  User.findOneAndUpdate({_id: findById}, {questions})
     .then(data =>{
       return res.json(data);
 

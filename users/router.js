@@ -207,10 +207,10 @@ router.get('/next/:id', (req, res, next)=>{
   //
   User.findById(req.params.id)
     .then((data)=>{
-      let headIndex = data.head;
+      // let headIndex = data.head;
       // let currentNode = data.questions[headIndex];
       // let nextNode = data.questions[headIndex].next;
-      return (res.json(data.questions[headIndex]));
+      return (res.json(data));
     });
   // .then(
   //   User.findOneAndUpdate({_id: findById}, {name: newName})
@@ -231,22 +231,51 @@ router.put('/next/:id/:testResults',(req,res,next) =>{
   const testResults = req.params.testResults;
   const findById = req.params.id;
   const userData = req.body;
+
+  const questionsArray = userData.questions;
+
+  const oldHead = userData.head;
+  const oldWord = userData.questions[oldHead]; //we'll need to change this 'next' equal to the [head+m].next
+  // let swappWord = userData.questions[oldHead + newMS];
+
+  const newHead = userData.questions[oldHead].next;
+
+  const oldMS = userData.questions[oldHead].memoryStrength;
+  let newMS;
   
-  console.log('backend userData ',userData); 
+  // console.log('backend userData ',userData); 
   //console.log('backend userData firstName ',userData.firstName);
-  console.log('backend testResults ',testResults);
+  // console.log('backend testResults ',testResults);
 
   //TRUE
   if(testResults){
+    // M*2
+    newMS = oldMS*2;
 
-    //set M to larger for the current word
-
+    //increase score
   }
-  /*FALSE*/ else { 
-
-    //set M to less for the current word
-
+  /*FALSE*/ 
+    else { 
+    //M+1
+    newMS = oldMS + 1; 
+    //increase score
   }
+
+  if(newMS > questionsArray.length - 1) {
+    newMS = (questionsArray.length - 1);
+  }
+
+  let swappWord = userData.questions[oldHead + newMS];
+  
+  oldWord.next = swappWord.next;
+  oldWord.memoryStrength = newMS;
+  swappWord.next = oldHead;
+
+  questionsArray[oldHead + newMS] = swappWord;
+  questionsArray[oldHead] = oldWord;
+
+  console.log('most recent question>>>>>', questionsArray[oldHead]);
+  // userData.head = newHead;
 
   //set new Head based on M?
 
@@ -255,13 +284,11 @@ router.put('/next/:id/:testResults',(req,res,next) =>{
   //create new questions object with changes
 
   //Update Head and questions array
-  // User.findOneAndUpdate({_id: findById}, {questions})
-  //   .then(data =>{
-  //     return res.json(data);
-
-  //   });
-
-
+  User.findOneAndUpdate({_id: findById}, { head: newHead, questions: questionsArray })
+    .then(data =>{
+      console.log('this is the data being returned to frontend>>>', data);
+      return res.json(data);
+    });
 
 });
 
@@ -338,23 +365,23 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 
 
 //DELETE
-router.delete('/delete/:id',jwtAuth,(req,res,next)=>{
+// router.delete('/delete/:id',jwtAuth,(req,res,next)=>{
 
-  const findById = req.params.id;
+//   const findById = req.params.id;
 
-  Block.findByIdAndRemove({_id : findById})
-    .then((data)=>{
+//   Block.findByIdAndRemove({_id : findById})
+//     .then((data)=>{
 
-      res.sendStatus(204);
-      console.log('gone!');
-      return res.json(data);
-
-
-    });
+//       res.sendStatus(204);
+//       console.log('gone!');
+//       return res.json(data);
 
 
+//     });
 
-});
+
+
+// });
 
  
 

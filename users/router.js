@@ -279,13 +279,28 @@ router.put('/next/:id/:testResults',(req,res,next) =>{
     newMS = (questionsArray.length - 1);
   }
 
-  let swappWord = userData.questions[oldHead + newMS];
+
+  let swapWordIndex;
+
+  //testing
+  if((oldHead + newMS) > questionsArray.length - 1) {
+
+    swapWordIndex = (questionsArray.length - 1);
+  }
+  else{
+
+    swapWordIndex = oldHead + newMS;
+
+  }
+   
+  let swappWord = userData.questions[swapWordIndex];
   
   oldWord.next = swappWord.next;
   oldWord.memoryStrength = newMS;
   swappWord.next = oldHead;
 
-  questionsArray[oldHead + newMS] = swappWord;
+
+  questionsArray[swapWordIndex] = swappWord;
   questionsArray[oldHead] = oldWord;
 
   userData.questions = questionsArray;

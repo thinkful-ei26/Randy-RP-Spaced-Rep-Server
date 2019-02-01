@@ -179,7 +179,6 @@ router.put('/put/:id',(req,res,next) =>{
 
 
 
-
 //GET user by ID
 router.get('/getNextWord/:id', (req,res, next)=>{
 

@@ -10,8 +10,8 @@ const words = [
     answer: 'No'
   },
   {
-    word: 'You',
-    answer: 'Tu'
+    word: 'Tu',
+    answer: 'You'
     
   },
   {

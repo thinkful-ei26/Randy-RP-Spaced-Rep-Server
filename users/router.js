@@ -218,11 +218,12 @@ router.get('/next/:id', (req, res, next)=>{
 
 }); 
 
+//AUTH  of an authorized User
+const jwtAuth = passport.authenticate('jwt', { session: false });
  
 //PUT BY USER ID THE NEW ORDER OF QUESTIONS BASED ON RESULT
 router.put('/next/:id/:testResults',(req,res,next) =>{
   
-  //console.log('>>> ',req.body.username);
    
   const testResults = req.params.testResults;
   const findById = req.params.id;
@@ -230,15 +231,15 @@ router.put('/next/:id/:testResults',(req,res,next) =>{
 
   console.log('*** incoming userData >>>>>', userData);
 
-  const questionsArray = userData.questions;
+  let questionsArray = userData.questions;
 
-  const oldHead = userData.head;
-  const oldWord = userData.questions[oldHead]; //we'll need to change this 'next' equal to the [head+m].next
+  let oldHead = userData.head;
+  let oldWord = userData.questions[oldHead]; //we'll need to change this 'next' equal to the [head+m].next
   // let swappWord = userData.questions[oldHead + newMS];
 
-  const newHead = userData.questions[oldHead].next;
+  let newHead = userData.questions[oldHead].next;
 
-  const oldMS = userData.questions[oldHead].memoryStrength;
+  let oldMS = userData.questions[oldHead].memoryStrength;
   let newMS;
   
   // console.log('backend userData ',userData); 
@@ -246,26 +247,33 @@ router.put('/next/:id/:testResults',(req,res,next) =>{
   // console.log('backend testResults ',testResults);
 
   //TRUE
-  if(testResults){
+  if(testResults === 'true'){
     // M*2
     newMS = oldMS*2;
 
     //increase score
-    userData.score ++; 
+    let newScore = userData.score;
+    newScore = newScore + 1;
+    userData.score = newScore;
   }
   /*FALSE*/ 
-  else { 
+  else if(testResults === 'false') { 
     //M+1
     newMS = oldMS + 1; 
-    //increase score
-    userData.score --;
+    
+    let newScore = userData.score;
+    newScore = newScore - 1;
+    userData.score = newScore;
   }
 
+  //score shold not go less than 0!
   if(userData.score < 0){
-
-    userData.score=0;
-
+    let newScore = 0;
+    userData.score = newScore;
   }
+
+  
+
 
   if(newMS > questionsArray.length - 1) {
     newMS = (questionsArray.length - 1);
@@ -280,29 +288,45 @@ router.put('/next/:id/:testResults',(req,res,next) =>{
   questionsArray[oldHead + newMS] = swappWord;
   questionsArray[oldHead] = oldWord;
 
-
   userData.questions = questionsArray;
   userData.head = newHead;
 
   console.log('*** updated userData >>>>>', userData);
 
-  //console.log('most recent question>>>>>', questionsArray[oldHead]);
-  // userData.head = newHead;
+  
 
-  //set new Head based on M?
-
-  //do swap of nodes? 
-
-  //create new questions object with changes
-  //head: newHead, 
-  //Update Head and questions array
-  User.findOneAndUpdate({_id: findById}, {userData}, {new: true})
-    .then(data => res.json(data)
-    );
-
+  User.findOneAndUpdate({_id: findById}, userData, {new: true})
+    .then(data => res.json(data));
 });
 
  
+
+
+//simple put
+router.put('/newPut/:id',jwtAuth,(req,res,next)=>{
+
+  const userId = req.params.id;
+  const userHead = req.body.head;
+  const userScore = req.body.score;
+   
+  
+  const userUpdate = {
+   
+    head: userHead,
+    score: userScore
+  
+  };
+
+ 
+  
+  User.findOneAndUpdate({_id: userId}, userUpdate, {new: true})
+    .then((data)=>{
+  
+      res.json(data);
+  
+    });
+
+});
 
 /*
 
@@ -319,7 +343,7 @@ router.put('/next/:id/:testResults',(req,res,next) =>{
 */
 
 //AUTH get all blocks with the uerRef of an authorized User
-const jwtAuth = passport.authenticate('jwt', { session: false });
+//const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // router.get('/blocks/',jwtAuth,(req,res) => {
  

@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const passport = require ('passport');
 const {User} = require('../models/user');
 
-
 const router = express.Router();
 
 const jsonParser = bodyParser.json();
@@ -143,9 +142,6 @@ router.post('/', jsonParser, (req, res) => {
 // if we're creating users. keep in mind, you can also
 // verify this in the Mongo shell.
 router.get('/', (req, res) => {
-
-  console.log('hello?: ');
-
   return User.find()
     .then(users => res.json(users.map(user => user.serialize())))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
@@ -158,98 +154,51 @@ router.get('/', (req, res) => {
 //endpoint for user words
 // //PUT--edit by ID
 router.put('/put/:id',(req,res,next) =>{
-
   const findById = req.params.id;
   const newName = req.body.name;
 
-  //Switch Algo stuff goes here
-
-  console.log('change this name >>> ',findById,' to this name >>> ',newName);
-
   User.findOneAndUpdate({_id: findById}, {name: newName}, {new: true})
     .then(data =>{
-
       return res.json(data);
-
     });
-
-
-
 });
-
-
 
 //GET user by ID
 router.get('/getNextWord/:id', (req,res, next)=>{
-
-  console.log('finding by this id>>> ',req.params.id);
-  
   User.findById(req.params.id)
     .then((data)=>{
-
       return res.json(data);
- 
     });
-
 }); 
-
 
 //GET THE CURRENT WORD from current user head
 router.get('/next/:id', (req, res, next)=>{
-
-  // console.log('finding by this id>>> ',req.params.id);
-
 //geGet word by index
-  //
   User.findById(req.params.id)
     .then((data)=>{
-      // let headIndex = data.head;
-      // let currentNode = data.questions[headIndex];
-      // let nextNode = data.questions[headIndex].next;
       return (res.json(data));
     });
-  // .then(
-  //   User.findOneAndUpdate({_id: findById}, {name: newName})
-  //     .then(data =>{
-  //       return res.json(data);
-  //     })
-  // );
-
 }); 
 
 //AUTH  of an authorized User
-const jwtAuth = passport.authenticate('jwt', { session: false });
+  const jwtAuth = passport.authenticate('jwt', { session: false });
  
 //PUT BY USER ID THE NEW ORDER OF QUESTIONS BASED ON RESULT
 router.put('/next/:id/:testResults',(req,res,next) =>{
-  
    
   const testResults = req.params.testResults;
   const findById = req.params.id;
   let userData = req.body;
-
-  console.log('*** incoming userData >>>>>', userData);
-
   let questionsArray = userData.questions;
-
   let oldHead = userData.head;
   let oldWord = userData.questions[oldHead]; //we'll need to change this 'next' equal to the [head+m].next
-  // let swappWord = userData.questions[oldHead + newMS];
-
   let newHead = userData.questions[oldHead].next;
-
   let oldMS = userData.questions[oldHead].memoryStrength;
   let newMS;
-  
-  // console.log('backend userData ',userData); 
-  //console.log('backend userData firstName ',userData.firstName);
-  // console.log('backend testResults ',testResults);
 
   //TRUE
   if(testResults === 'true'){
-    // M*2
     newMS = oldMS*2;
-
     //increase score
     let newScore = userData.score;
     newScore = newScore + 1;
@@ -257,39 +206,29 @@ router.put('/next/:id/:testResults',(req,res,next) =>{
   }
   /*FALSE*/ 
   else if(testResults === 'false') { 
-    //M+1
     newMS = oldMS + 1; 
-    
+    //decrease score
     let newScore = userData.score;
     newScore = newScore - 1;
     userData.score = newScore;
   }
 
   //score shold not go less than 0!
-  if(userData.score < 0){
+  if (userData.score < 0){
     let newScore = 0;
     userData.score = newScore;
   }
-
-  
-
-
-  if(newMS > questionsArray.length - 1) {
+  if (newMS > questionsArray.length - 1) {
     newMS = (questionsArray.length - 1);
   }
 
-
   let swapWordIndex;
-
   //testing
-  if((oldHead + newMS) > questionsArray.length - 1) {
-
+  if ((oldHead + newMS) > questionsArray.length - 1) {
     swapWordIndex = (questionsArray.length - 1);
   }
-  else{
-
+  else {
     swapWordIndex = oldHead + newMS;
-
   }
    
   let swappWord = userData.questions[swapWordIndex];
@@ -297,154 +236,13 @@ router.put('/next/:id/:testResults',(req,res,next) =>{
   oldWord.next = swappWord.next;
   oldWord.memoryStrength = newMS;
   swappWord.next = oldHead;
-
-
   questionsArray[swapWordIndex] = swappWord;
   questionsArray[oldHead] = oldWord;
-
   userData.questions = questionsArray;
   userData.head = newHead;
-
-  console.log('*** updated userData >>>>>', userData);
-
-  
 
   User.findOneAndUpdate({_id: findById}, userData, {new: true})
     .then(data => res.json(data));
 });
-
- 
-
-
-//simple put
-router.put('/newPut/:id',jwtAuth,(req,res,next)=>{
-
-  const userId = req.params.id;
-  const userHead = req.body.head;
-  const userScore = req.body.score;
-   
-  
-  const userUpdate = {
-   
-    head: userHead,
-    score: userScore
-  
-  };
-
- 
-  
-  User.findOneAndUpdate({_id: userId}, userUpdate, {new: true})
-    .then((data)=>{
-  
-      res.json(data);
-  
-    });
-
-});
-
-/*
-
-      console.log('userData in findOneAndUpdate: ', userData);
-      // console.log('this is the data being returned to frontend>>>');
-      // console.log('head: ', data.head);
-      // for(let i=0;i<data.length;i++){
-
-      //   console.log('arr index: ',i,' | word: ',data.questions[i].word,' | next: ',data.questions[i].next);
- 
-      // }
-      // console.log('-------------------------------------------d>>>');
-
-*/
-
-//AUTH get all blocks with the uerRef of an authorized User
-//const jwtAuth = passport.authenticate('jwt', { session: false });
-
-// router.get('/blocks/',jwtAuth,(req,res) => {
- 
-//   console.log('looking for this user id: ',req.user.id);
-
-//   //let testId = "5c3655bdead1409174e85298";
-
-//   Block.find({userRef: req.user.id})
-//     .then((data)=>{return res.json(data);});
-
-// });
-
-// //AUTH post blocks
-// //Post--Create a block
-// router.post('/blocks/post',jwtAuth,(req,res,next)=>{
-
-//   console.log('body>> ',req.body);
-
-  
-//   const startDateInput = req.body.startDate;
-//   const endDateInput = req.body.endDate;
-//   const userRefInput = req.body.userRef;
-
-//   const newBlock = {
-
-//     userRef: userRefInput,
-//     startDate: startDateInput,
-//     endDate: endDateInput
-
-
-//   };
-
-//   Block.create(newBlock)
-//     .then((data)=>{
-
-//       res.json(data);
- 
-//     });
-
-// });
-
-// //PUT--edit by ID by its ID and user ID
-// router.put('/blocks/put/:id',jwtAuth,(req,res,next)=>{
-
-//   const blockId = req.params.id;
-//   //const userRef = req.body.userRef;
-
-//   const updateStartDate = req.body.startDate;
-//   const updateEndDate = req.body.endDate;
-
-//   const blockUpdate = {
- 
-//     startDate: updateStartDate,
-//     endDate: updateEndDate
-
-//   };
-
-//   Block.findOneAndUpdate({_id: blockId}, blockUpdate, {new: true})
-//     .then((data)=>{
-
-//       res.json(data);
-
-//     });
- 
-
-// }); 
-
-
-//DELETE
-// router.delete('/delete/:id',jwtAuth,(req,res,next)=>{
-
-//   const findById = req.params.id;
-
-//   Block.findByIdAndRemove({_id : findById})
-//     .then((data)=>{
-
-//       res.sendStatus(204);
-//       console.log('gone!');
-//       return res.json(data);
-
-
-//     });
-
-
-
-// });
-
- 
 
 module.exports = {router};

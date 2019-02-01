@@ -32,14 +32,6 @@ wordSchema.methods.serialize = function() {
   };
 };
 
-// wordSchema.methods.validatePassword = function(password) {
-//   return bcrypt.compare(password, this.password);
-// };
-
-// wordSchema.statics.hashPassword = function(password) {
-//   return bcrypt.hash(password, 10);
-// };
-
 const Word = mongoose.model('Word', wordSchema);
 
 module.exports = {Word};

@@ -26,7 +26,8 @@ const UserSchema = mongoose.Schema({
       next: Number
     }
   ],
-  head: {type: Number, default: 0}
+  head: {type: Number, default: 0},
+  score: {type: Number, default: 0}
 });
 
 // Add `createdAt` and `updatedAt` fields
@@ -48,7 +49,8 @@ UserSchema.methods.serialize = function() {
     lastName: this.lastName || '',
     questions: this.questions,
     head: this.head,
-    _id: this._id
+    _id: this._id,
+    score: this.score
   };
 
 };

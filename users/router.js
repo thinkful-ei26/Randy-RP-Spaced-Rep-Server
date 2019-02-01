@@ -164,9 +164,6 @@ router.put('/put/:id',(req,res,next) =>{
 
   //Switch Algo stuff goes here
 
-
-
-
   console.log('change this name >>> ',findById,' to this name >>> ',newName);
 
   User.findOneAndUpdate({_id: findById}, {name: newName}, {new: true})
@@ -225,12 +222,13 @@ router.get('/next/:id', (req, res, next)=>{
 //PUT BY USER ID THE NEW ORDER OF QUESTIONS BASED ON RESULT
 router.put('/next/:id/:testResults',(req,res,next) =>{
   
-  console.log('>>> ',req.body.username);
+  //console.log('>>> ',req.body.username);
    
-
   const testResults = req.params.testResults;
   const findById = req.params.id;
-  const userData = req.body;
+  let userData = req.body;
+
+  console.log('*** incoming userData >>>>>', userData);
 
   const questionsArray = userData.questions;
 
@@ -253,12 +251,20 @@ router.put('/next/:id/:testResults',(req,res,next) =>{
     newMS = oldMS*2;
 
     //increase score
+    userData.score ++; 
   }
   /*FALSE*/ 
-    else { 
+  else { 
     //M+1
     newMS = oldMS + 1; 
     //increase score
+    userData.score --;
+  }
+
+  if(userData.score < 0){
+
+    userData.score=0;
+
   }
 
   if(newMS > questionsArray.length - 1) {
@@ -274,7 +280,13 @@ router.put('/next/:id/:testResults',(req,res,next) =>{
   questionsArray[oldHead + newMS] = swappWord;
   questionsArray[oldHead] = oldWord;
 
-  console.log('most recent question>>>>>', questionsArray[oldHead]);
+
+  userData.questions = questionsArray;
+  userData.head = newHead;
+
+  console.log('*** updated userData >>>>>', userData);
+
+  //console.log('most recent question>>>>>', questionsArray[oldHead]);
   // userData.head = newHead;
 
   //set new Head based on M?
@@ -282,17 +294,29 @@ router.put('/next/:id/:testResults',(req,res,next) =>{
   //do swap of nodes? 
 
   //create new questions object with changes
-
+  //head: newHead, 
   //Update Head and questions array
-  User.findOneAndUpdate({_id: findById}, { head: newHead, questions: questionsArray })
-    .then(data =>{
-      console.log('this is the data being returned to frontend>>>', data);
-      return res.json(data);
-    });
+  User.findOneAndUpdate({_id: findById}, {userData}, {new: true})
+    .then(data => res.json(data)
+    );
 
 });
 
  
+
+/*
+
+      console.log('userData in findOneAndUpdate: ', userData);
+      // console.log('this is the data being returned to frontend>>>');
+      // console.log('head: ', data.head);
+      // for(let i=0;i<data.length;i++){
+
+      //   console.log('arr index: ',i,' | word: ',data.questions[i].word,' | next: ',data.questions[i].next);
+ 
+      // }
+      // console.log('-------------------------------------------d>>>');
+
+*/
 
 //AUTH get all blocks with the uerRef of an authorized User
 const jwtAuth = passport.authenticate('jwt', { session: false });
